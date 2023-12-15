@@ -11,6 +11,7 @@ logging.debug('Public IP: %s', ip)
 with open(sys.argv[1], 'rb') as f:
     cfg = tomllib.load(f)
     discord_url = cfg['discord']['url']
+    mention_id = cfg['discord']['mention_id']
     for hostname in cfg['credentials'].keys():
         logging.debug('Hostname: %s', hostname)
         creds = cfg['credentials'][hostname]
@@ -20,5 +21,6 @@ with open(sys.argv[1], 'rb') as f:
         if dyndns.startswith('good'):
             discord = requests.post(
                 discord_url,
-                json={'content': '`{}` A record got updated to `{}`'.format(hostname, ip)}).status_code
+                json={'content': '<@{}> `{}` A record got updated to `{}`'.format(mention_id, hostname, ip)}
+            ).status_code
             logging.debug('Discord responded: %s', discord)
